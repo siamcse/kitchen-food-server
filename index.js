@@ -36,7 +36,15 @@ async function run() {
             res.send(service);
         })
 
-        
+        //reviews data read
+        app.get('/reviews/:id',async(req,res)=>{
+            const id = req.params.id;
+            console.log(id);
+            const query = {serviceId: id};
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
+        })
 
         //service added
         app.post('/services',async(req,res)=>{
