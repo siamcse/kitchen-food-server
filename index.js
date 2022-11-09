@@ -23,7 +23,7 @@ async function run() {
             const query = {};
             const count = await serviceCollection.estimatedDocumentCount();
             const size = parseInt(req.query.size) || count;
-            const cursor = serviceCollection.find(query).limit(size);
+            const cursor = serviceCollection.find(query).limit(size).sort({ $natural: -1 });
             const services = await cursor.toArray();
             res.send({ count, services });
         })
