@@ -35,6 +35,12 @@ async function run() {
             const service = await serviceCollection.findOne(query);
             res.send(service);
         })
+        //service added
+        app.post('/services', async (req, res) => {
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service);
+            res.send(result);
+        })
 
         //reviews data read
         app.get('/reviews',async(req,res)=>{
@@ -53,18 +59,45 @@ async function run() {
             const review = await cursor.toArray();
             res.send(review);
         })
-
-        //service added
-        app.post('/services',async(req,res)=>{
-            const service = req.body;
-            const result = await serviceCollection.insertOne(service);
-            res.send(result);
+        app.get('/review/:id',async(req,res)=>{
+            const id = req.params.id;
+            console.log(id);
+            const query = {_id: ObjectId(id)};
+            const review = await reviewCollection.findOne(query);
+            res.send(review);
         })
+
+        
 
         //reviews added
         app.post('/reviews',async(req,res)=>{
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        })
+        //review edit
+        app.patch('/review/:id',async(req,res)=>{
+            const id = req.params.id;
+            const review = req.body;
+            console.log(review);
+            const query = {_id: ObjectId(id)};
+            const updateReview = {
+                $set:{
+                    name: review.name,
+                    rating: review.rating,
+                    image: review.image,
+                    comment: review.comment
+                }
+            }
+            const result = await reviewCollection.updateOne(query, updateReview);
+            res.send(result);
+
+        })
+        //reviews delete
+        app.delete('/reviews/:id',async(req,res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await reviewCollection.deleteOne(query);
             res.send(result);
         })
 
