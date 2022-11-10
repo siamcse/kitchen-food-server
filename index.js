@@ -21,7 +21,7 @@ function verifyJWT(req, res, next) {
     const token = authHeader.split(' ')[1];
     jwt.verify(token, process.env.ACCESS_SECRET_TOKEN, function (err, decoded) {
         if (err) {
-            return res.status(401).send({ message: 'Unauthorized access' });
+            return res.status(403).send({ message: 'Unauthorized access' });
         }
         req.decoded = decoded;
         next();
@@ -38,7 +38,6 @@ async function run() {
         app.post('/jwt', (req, res) => {
             const user = req.body;
             const token = jwt.sign(user, process.env.ACCESS_SECRET_TOKEN, { expiresIn: '1h' });
-            console.log(token);
             res.send({ token });
         })
 
@@ -69,7 +68,6 @@ async function run() {
         //my reviews data read
         app.get('/reviews', verifyJWT, async (req, res) => {
             const decoded = req.decoded;
-            console.log(decoded);
             const email = req.query.email;
             if(decoded.email!==email){
                 res.status(403).send({ message: 'Unauthorized access' });
